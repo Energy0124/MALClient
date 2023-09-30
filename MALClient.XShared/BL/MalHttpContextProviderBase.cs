@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using MALClient.XShared.Interfaces;
 using MALClient.XShared.Utils;
 using MALClient.XShared.ViewModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MALClient.XShared.BL
 {
@@ -49,39 +51,107 @@ namespace MALClient.XShared.BL
 
         public async Task<HttpClient> GetApiHttpContextAsync()
         {
-            if (_apiHttpClient != null && DateTime.UtcNow - _lastRefresh < TimeSpan.FromMinutes(50))
+            if (_apiHttpClient != null && DateTime.UtcNow - _lastRefresh < TimeSpan.FromMinutes(50) && _apiHttpClient?.DefaultRequestHeaders?.Authorization?.Parameter == Settings.ApiToken)
                 return _apiHttpClient;
-            
-            using var tokenClient = new HttpClient();
-            var content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
-            {
-                new("client_id", "183063f74126e7551b00c3b4de66986c"),
-                new("grant_type", "refresh_token"),
-                new("refresh_token", Settings.RefreshToken)
-            });
 
             try
             {
-                var response = await tokenClient.PostAsync("https://myanimelist.net/v1/oauth2/token", content);
-                var json = await response.Content.ReadAsStringAsync();
-                var tokens = JsonConvert.DeserializeObject<TokenResponse>(json);
+                await _semaphoreSlim.WaitAsync();
 
-                Settings.ApiToken = tokens.access_token;
-                Settings.RefreshToken = tokens.refresh_token;
+                if (_apiHttpClient != null && DateTime.UtcNow - _lastRefresh < TimeSpan.FromMinutes(50) && _apiHttpClient?.DefaultRequestHeaders?.Authorization?.Parameter == Settings.ApiToken)
+                    return _apiHttpClient;
 
-                _apiHttpClient = new HttpClient();
-                _apiHttpClient.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", Settings.ApiToken);
+                using var tokenClient = new HttpClient();
+                var content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
+                {
+                    new("client_id", "183063f74126e7551b00c3b4de66986c"),
+                    new("grant_type", "refresh_token"),
+                    new("refresh_token", Settings.RefreshToken)
+                });
+
+                try
+                {
+                    var expirationDiff = DateTimeOffset.FromUnixTimeSeconds(Settings.ApiTokenExpires) - DateTimeOffset.UtcNow;
+                    if (expirationDiff > TimeSpan.FromHours(1) && (_apiHttpClient == null || _apiHttpClient?.DefaultRequestHeaders?.Authorization.Parameter == Settings.ApiToken))
+                    {
+                        _lastRefresh = DateTime.UtcNow;
+
+                        _apiHttpClient = new HttpClient();
+                        _apiHttpClient.DefaultRequestHeaders.Authorization =
+                            new AuthenticationHeaderValue("Bearer", Settings.ApiToken);
+                    }
+                    else
+                    {
+                        var response = await tokenClient.PostAsync("https://myanimelist.net/v1/oauth2/token", content);
+                        var json = await response.Content.ReadAsStringAsync();
+                        var tokens = JsonConvert.DeserializeObject<TokenResponse>(json);
+
+                        Settings.ApiTokenExpires =
+                            DateTimeOffset.UtcNow.AddSeconds(tokens.expires_in).Subtract(TimeSpan.FromHours(1)).ToUnixTimeSeconds();
+                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        //try
+                        //{
+                        //    var jwtData = JsonConvert.DeserializeObject<Root>(Encoding.UTF8.GetString(Convert.FromBase64String(tokens.access_token.Split('.')[1])));
+                        //    var diff = DateTimeOffset.FromUnixTimeSeconds(jwtData.nbf) - DateTimeOffset.UtcNow;
+                        //    ResourceLocator.MessageDialogProvider.ShowMessageDialog(diff.TotalSeconds.ToString(), "");
+                        //    //if (diff > TimeSpan.Zero)
+                        //    //{
+                        //    //    if(diff < TimeSpan.FromSeconds(1))
+                        //    //        diff = TimeSpan.FromSeconds(1);
+
+                        //    //    diff = diff.Add(TimeSpan.FromSeconds(1));
+
+                        //    //    ResourceLocator.MessageDialogProvider.ShowLoadingPopup(
+                        //    //        $"Awaiting valid token from MAL... {diff.TotalSeconds:N0}s", "");
+                        //    //    for (int i = 1; i <= (int)diff.TotalSeconds + 1; i++)
+                        //    //    {
+                        //    //        await Task.Delay(TimeSpan.FromSeconds(1));
+                        //    //        ResourceLocator.MessageDialogProvider.UpdateLoadingPopup(
+                        //    //            $"Awaiting valid token from MAL... {(diff.TotalSeconds - i):N0}s", "");
+                        //    //    }
+
+                        //    //    ResourceLocator.MessageDialogProvider.HideLoadingDialog();
+                        //    //}
+                        //}
+                        //catch (Exception e)
+                        //{
+                        //    //unknown format
+                        //    var diff = TimeSpan.FromSeconds(10);
+                        //    ResourceLocator.MessageDialogProvider.ShowLoadingPopup(
+                        //        $"Awaiting valid token from MAL... {diff.TotalSeconds:N0}s", "");
+                        //    for (int i = 1; i <= (int)diff.TotalSeconds; i++)
+                        //    {
+                        //        await Task.Delay(TimeSpan.FromSeconds(1));
+                        //        ResourceLocator.MessageDialogProvider.UpdateLoadingPopup(
+                        //            $"Awaiting valid token from MAL... {(diff.TotalSeconds - i):N0}s", "");
+                        //    }
+
+                        //    ResourceLocator.MessageDialogProvider.HideLoadingDialog();
+                        //}
+
+                        Settings.ApiToken = tokens.access_token;
+                        Settings.RefreshToken = tokens.refresh_token;
+                        _lastRefresh = DateTime.UtcNow;
+
+                        _apiHttpClient = new HttpClient();
+                        _apiHttpClient.DefaultRequestHeaders.Authorization =
+                            new AuthenticationHeaderValue("Bearer", Settings.ApiToken);
+                    }
+                }
+                catch (Exception e)
+                {
+                    ResourceLocator.DispatcherAdapter.Run(() =>
+                        ResourceLocator.MessageDialogProvider.ShowMessageDialog(
+                            "Failed to authorize with MyAnimeList, please try signing in again.", "Error"));
+                    throw;
+                }
+
+                return _apiHttpClient;
             }
-            catch (Exception e)
+            finally
             {
-                ResourceLocator.DispatcherAdapter.Run(() =>
-                    ResourceLocator.MessageDialogProvider.ShowMessageDialog(
-                        "Failed to authorize with MyAnimeList, please try signing in again.", "Error"));
-                throw;
+                _semaphoreSlim.Release();
             }
-
-            return _apiHttpClient;
         }
 
         protected abstract Task<CsrfHttpClient> ObtainContext();
@@ -170,5 +240,17 @@ namespace MALClient.XShared.BL
             public string access_token { get; set; }
             public string refresh_token { get; set; }
         }
+    }
+
+    [Preserve(AllMembers = true)]
+    public class Root
+    {
+        public string aud { get; set; }
+        public string jti { get; set; }
+        public int iat { get; set; }
+        public int nbf { get; set; }
+        public int exp { get; set; }
+        public string sub { get; set; }
+        public List<object> scopes { get; set; }
     }
 }
