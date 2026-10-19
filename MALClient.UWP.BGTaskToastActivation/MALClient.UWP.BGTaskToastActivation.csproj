@@ -11,7 +11,7 @@
     <AssemblyName>MALClient.UWP.BGTaskToastActivation</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.22621.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -116,6 +116,10 @@
     <ProjectReference Include="..\MALClient.Models\MALClient.Models.csproj">
       <Project>{9948a48d-1cfc-40e5-9bfa-6f93fe4c44a0}</Project>
       <Name>MALClient.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MALClient.UWP.Adapters\MALClient.UWP.Adapters.csproj">
+      <Project>{7087a044-1675-413b-86c3-a0005c87b0b5}</Project>
+      <Name>MALClient.UWP.Adapters</Name>
     </ProjectReference>
     <ProjectReference Include="..\MALClient.XShared\MALClient.XShared.csproj">
       <Project>{036824de-34ca-4611-a8ee-02a939cdd295}</Project>

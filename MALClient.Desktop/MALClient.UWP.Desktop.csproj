@@ -11,7 +11,7 @@
     <AssemblyName>MALClient</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.22621.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
@@ -20,12 +20,12 @@
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
-    <AppxPackageDir>C:\Users\Piotr\Documents\VsBuilds\</AppxPackageDir>
+    <AppxPackageDir>AppPackages\</AppxPackageDir>
     <HockeyAppResourceId>b79e78858bdf44c4bfc3a1f37c8fd90c</HockeyAppResourceId>
     <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
     <PackageCertificateThumbprint>
     </PackageCertificateThumbprint>
-    <PackageCertificateKeyFile>MALClient.UWP.Desktop_StoreKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>energy0124.pfx</PackageCertificateKeyFile>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
@@ -35,6 +35,8 @@
     <EnableXBindDiagnostics>false</EnableXBindDiagnostics>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
   </PropertyGroup>
+  <!-- Local, uncommitted signing secrets (e.g. PackageCertificatePassword) -->
+  <Import Project="Signing.local.props" Condition="Exists('Signing.local.props')" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
@@ -325,6 +327,7 @@
     <None Include="MALClient.UWP.Desktop_StoreKey.pfx" />
     <None Include="Package.StoreAssociation.xml" />
     <None Include="Package.xml" />
+    <Content Include="energy0124.pfx" />
     <Content Include="Properties\Default.rd.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -564,7 +567,7 @@
     <SDKReference Include="Microsoft.VCLibs, Version=14.0">
       <Name>Visual C++ 2015 Runtime for Universal Windows Platform Apps</Name>
     </SDKReference>
-    <SDKReference Include="WindowsDesktop, Version=10.0.19041.0">
+    <SDKReference Include="WindowsDesktop, Version=10.0.22621.0">
       <Name>Windows Desktop Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>

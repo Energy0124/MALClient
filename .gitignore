@@ -4,6 +4,7 @@
 # User-specific files
 *.suo
 *.user
+*.local.props
 *.userosscache
 *.sln.docstates
 
@@ -142,6 +143,8 @@ publish/
 
 # NuGet Packages
 *.nupkg
+# except the local feed for packages no longer on nuget.org
+!LocalPackages/*.nupkg
 # The packages folder can be ignored because of Package Restore
 **/packages/*
 # except build/, which is used as an MSBuild target.

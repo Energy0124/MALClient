@@ -59,5 +59,21 @@ namespace MALClient.UWP.Adapters
             }
 
         }
+
+        //loading popups are only implemented on Android for now
+        public void ShowLoadingPopup(string title, string content)
+        {
+
+        }
+
+        public void HideLoadingDialog()
+        {
+
+        }
+
+        public void UpdateLoadingPopup(string title, string content)
+        {
+
+        }
     }
 }

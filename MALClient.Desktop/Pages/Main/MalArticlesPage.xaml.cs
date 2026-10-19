@@ -98,8 +98,8 @@ namespace MALClient.UWP.Pages.Main
                         //    return;
                         //}
                         var id = int.Parse(link[2]);
-                        if (Settings.SelectedApiType == ApiType.Hummingbird) //id switch            
-                            id = await new AnimeDetailsHummingbirdQuery(id).GetHummingbirdId();
+                        //if (Settings.SelectedApiType == ApiType.Hummingbird) //id switch
+                        //    id = await new AnimeDetailsHummingbirdQuery(id).GetHummingbirdId();
                         ViewModelLocator.GeneralMain.Navigate(PageIndex.PageAnimeDetails,
                             new AnimeDetailsPageNavigationArgs(id, link.Length == 4 ? link[3] : null, null, null)
                             {
