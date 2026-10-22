@@ -1,26 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
+using Android.Runtime;
 using JikanDotNet;
-using JikanDotNet.Config;
 using MALClient.Models.Models.Anime;
 using MALClient.Models.Models.AnimeScrapped;
 using MALClient.XShared.Utils;
+using MALClient.XShared.ViewModels;
+using Newtonsoft.Json;
 
 namespace MALClient.XShared.Comm.Anime
 {
     public class AnimeSeasonalQuery : Query
     {
+        //public jikan api was discontinued on 1st Oct 2026, official mal api only needs client id for this endpoint
+        private const string MalClientId = "183063f74126e7551b00c3b4de66986c";
+
         private readonly AnimeSeason _season;
 
         public AnimeSeasonalQuery(AnimeSeason season)
         {
             _season = season;
+        }
+
+        //jikan's Season enum isn't in calendar order (Spring = 0 ... Winter = 3)
+        private static readonly Season[] CalendarSeasons = {Season.Winter, Season.Spring, Season.Summer, Season.Fall};
+
+        public static AnimeSeason GetCurrentSeason()
+        {
+            var now = DateTime.UtcNow;
+            return CreateSeason(now.Year, CalendarSeasons[(now.Month - 1) / 3]);
+        }
+
+        /// <summary>
+        ///     Two previous seasons, current one and next one.
+        /// </summary>
+        public static List<AnimeSeason> GetSeasonSelection()
+        {
+            var current = GetCurrentSeason();
+            var currentIndex = current.Year * 4 + Array.IndexOf(CalendarSeasons, current.Season);
+            return Enumerable.Range(currentIndex - 2, 4)
+                .Select(index => CreateSeason(index / 4, CalendarSeasons[index % 4]))
+                .ToList();
+        }
+
+        private static AnimeSeason CreateSeason(int year, Season season)
+        {
+            return new AnimeSeason {Name = $"{season} {year}", Year = year, Season = season};
         }
 
         public async Task<List<SeasonalAnimeData>> GetSeasonalAnime(bool force = false)
@@ -31,64 +59,43 @@ namespace MALClient.XShared.Comm.Anime
             //current season without suffix
             if (output.Count != 0) return output;
 
+            var requestedSeason = _season.Year != 0 ? _season : GetCurrentSeason();
+
             using var client = new HttpClient();
-            int currentPage = 1;
+            client.DefaultRequestHeaders.Add("X-MAL-CLIENT-ID", MalClientId);
             try
             {
-                while (true)
+                var url = $"https://api.myanimelist.net/v2/anime/season/{requestedSeason.Year}/" +
+                          $"{requestedSeason.Season.ToString().ToLowerInvariant()}" +
+                          "?fields=id,title,main_picture,num_episodes,mean,genres,start_date,broadcast,status" +
+                          "&sort=anime_num_list_users&limit=500";
+
+                while (url != null)
                 {
-                    var requestedYear = (_season.Year != 0) switch
-                    {
-                        true => _season.Year,
-                        false => DateTime.UtcNow.Year
-                    };
+                    var season = JsonConvert.DeserializeObject<Root>(await client.GetStringAsync(url));
 
-                    var requestedSeason = (_season.Year != 0) switch
+                    foreach (var entry in season.data.Select(datum => datum.node))
                     {
-                        true => _season.Season,
-                        false => DateTime.UtcNow.Month switch
+                        output.Add(new SeasonalAnimeData
                         {
-                            > 0 and <= 3 => Season.Winter,
-                            > 3 and <= 6 => Season.Spring,
-                            > 6 and <= 9 => Season.Summer,
-                            > 0 and <= 12 => Season.Fall
-                        }
-                    };
-
-                    try
-                    {
-                        var season = JsonSerializer.Deserialize<PaginatedJikanResponse<ICollection<JikanDotNet.Anime>>>(
-                            await client.GetStringAsync(
-                                $"https://api.jikan.moe/v4/seasons/{requestedYear}/{requestedSeason}?page={currentPage}"));
-
-                        foreach (var seasonSeasonEntry in season.Data)
-                        {
-                            output.Add(new SeasonalAnimeData
-                            {
-                                Title = seasonSeasonEntry.Title,
-                                Id = (int)(seasonSeasonEntry.MalId ?? -1),
-                                ImgUrl = seasonSeasonEntry.Images.JPG.ImageUrl,
-                                Episodes = (seasonSeasonEntry.Episodes ?? 0).ToString(),
-                                Score = (float)(seasonSeasonEntry.Score ?? 0),
-                                Genres = seasonSeasonEntry.Genres.Select(item => item.Name).ToList(),
-                                Index = season.Data.FindIndex(seasonSeasonEntry) + (25 * (currentPage - 1)) + 1
-                            });
-                        }
-
-                        if (!season.Pagination.HasNextPage)
-                            break;
-
-                        await Task.Delay(TimeSpan.FromMilliseconds(500));
-
-                        currentPage++;
+                            Title = entry.title,
+                            Id = entry.id,
+                            ImgUrl = entry.main_picture?.large ?? entry.main_picture?.medium,
+                            Episodes = entry.num_episodes.ToString(),
+                            Score = entry.mean ?? 0,
+                            Genres = entry.genres?.Select(item => item.name).ToList() ?? new List<string>(),
+                            Index = output.Count + 1,
+                            AirDay = entry.status != "finished_airing" &&
+                                     Enum.TryParse(entry.broadcast?.day_of_the_week, true, out DayOfWeek day)
+                                ? (int) day + 1
+                                : -1,
+                            AirStartDate = entry.start_date?.Length == 10
+                                ? entry.start_date
+                                : AnimeItemViewModel.InvalidStartEndDate
+                        });
                     }
-                    catch (HttpRequestException e)
-                    {
-                        if (e.Message.Contains("429"))
-                            await Task.Delay(TimeSpan.FromSeconds(1));
-                        else
-                            throw;
-                    }
+
+                    url = season.paging?.next;
                 }
 
                 DataCache.SaveSeasonalData(output, _season.Name);
@@ -96,10 +103,62 @@ namespace MALClient.XShared.Comm.Anime
                 //We are done.
                 return output;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return output;
             }
+        }
+
+        [Preserve(AllMembers = true)]
+        public class MainPicture
+        {
+            public string medium { get; set; }
+            public string large { get; set; }
+        }
+
+        [Preserve(AllMembers = true)]
+        public class Genre
+        {
+            public string name { get; set; }
+        }
+
+        [Preserve(AllMembers = true)]
+        public class Broadcast
+        {
+            public string day_of_the_week { get; set; }
+        }
+
+        [Preserve(AllMembers = true)]
+        public class Node
+        {
+            public int id { get; set; }
+            public string title { get; set; }
+            public MainPicture main_picture { get; set; }
+            public int num_episodes { get; set; }
+            public float? mean { get; set; }
+            public List<Genre> genres { get; set; }
+            public string start_date { get; set; }
+            public Broadcast broadcast { get; set; }
+            public string status { get; set; }
+        }
+
+        [Preserve(AllMembers = true)]
+        public class Datum
+        {
+            public Node node { get; set; }
+        }
+
+        [Preserve(AllMembers = true)]
+        public class Paging
+        {
+            public string next { get; set; }
+        }
+
+        [Preserve(AllMembers = true)]
+        public class Root
+        {
+            public List<Datum> data { get; set; }
+            public Paging paging { get; set; }
         }
     }
 }

@@ -1070,25 +1070,15 @@ namespace MALClient.XShared.ViewModels.Main
             if (WorkMode == AnimeListWorkModes.SeasonalAnime && SeasonSelection.Count == 0)
             {
                 SeasonSelection.Clear();
-                var i = 0;
                 var currSeasonIndex = -1;
                 try
                 {
-                    var seasons = await JikanClient.Jikan.GetSeasonArchiveAsync();
-
-                    foreach (var season in seasons.Data.Take(3))
+                    var currentSeasonName = AnimeSeasonalQuery.GetCurrentSeason().Name;
+                    foreach (var season in AnimeSeasonalQuery.GetSeasonSelection())
                     {
-                        foreach (var yearSeason in season.Season)
-                        {
-                            SeasonSelection.Add(new AnimeSeason { Name = $"{yearSeason} {season.Year}", Year = season.Year, Season = yearSeason});
-                            i++;
-                        }
-
-                        //if (seasonalUrl.Key == CurrentSeason.Name)
-                        //{
-                        //    _seasonalUrlsSelectedIndex = i - 1;
-                        //    RaisePropertyChanged(() => SeasonalUrlsSelectedIndex);
-                        //}
+                        if (season.Name == currentSeasonName)
+                            currSeasonIndex = SeasonSelection.Count;
+                        SeasonSelection.Add(season);
                     }
                     //we have set artificial default one because we did not know what lays ahead of us
                     if (setDefaultSeason && currSeasonIndex != -1)

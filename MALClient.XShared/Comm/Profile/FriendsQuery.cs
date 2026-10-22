@@ -4,11 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Android.Runtime;
 using HtmlAgilityPack;
-using JikanDotNet;
 using MALClient.Models.Models;
 using MALClient.Models.Models.MalSpecific;
 using MALClient.XShared.Utils;
+using Newtonsoft.Json;
 
 namespace MALClient.XShared.Comm.Profile
 {
@@ -27,21 +28,22 @@ namespace MALClient.XShared.Comm.Profile
 
             try
             {
-                var jikan = JikanClient.Jikan;
-                var result = await jikan.GetUserFriendsAsync(_userName);
+                var json = await JikanClient.UsersHttpClient.GetStringAsync(
+                    $"users/{Uri.EscapeDataString(_userName)}/friends");
+                var result = JsonConvert.DeserializeObject<FriendsRoot>(json);
 
                 foreach (var friend in result.Data)
                 {
                     output.Add(new MalFriend
                     {
-                        Id = friend.User.Url,
+                        Id = $"https://myanimelist.net/profile/{friend.Username}",
                         User = new MalUser
                         {
-                            ImgUrl = friend.User.Images.JPG.ImageUrl,
-                            Name = friend.User.Username,
+                            ImgUrl = friend.ImageUrl,
+                            Name = friend.Username,
                         },
-                        FriendsSince = friend.FriendsSince?.ToString("yyyy-MM-dd") ?? "N/A",
-                        LastOnline = friend.LastOnline?.ToString("yyyy-MM-dd") ?? "N/A",
+                        FriendsSince = friend.FriendsSince ?? "N/A",
+                        LastOnline = friend.LastOnline ?? "N/A",
                     });
                 }
             }
@@ -49,9 +51,24 @@ namespace MALClient.XShared.Comm.Profile
             {
                 //HTML as always
             }
-  
+
 
             return output;
+        }
+
+        [Preserve(AllMembers = true)]
+        public class Friend
+        {
+            public string Username { get; set; }
+            public string ImageUrl { get; set; }
+            public string LastOnline { get; set; }
+            public string FriendsSince { get; set; }
+        }
+
+        [Preserve(AllMembers = true)]
+        public class FriendsRoot
+        {
+            public List<Friend> Data { get; set; }
         }
     }
 }

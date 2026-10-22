@@ -48,8 +48,8 @@ namespace MALClient.XShared.Comm.Anime
                     {
                         try
                         {
-                            var json = await _client.GetStringAsync(
-                                $"https://api.jikan.moe/v4/anime/{_targetId}/reviews?page=1");
+                            var json = await JikanClient.HttpClient.GetStringAsync(
+                                $"anime/{_targetId}/reviews?page=1");
                             reviews = JsonSerializer.Deserialize<Root>(json);
                             break;
                         }
@@ -66,8 +66,8 @@ namespace MALClient.XShared.Comm.Anime
                     {
                         try
                         {
-                            var json = await _client.GetStringAsync(
-                                $"https://api.jikan.moe/v4/manga/{_targetId}/reviews?page=1");
+                            var json = await JikanClient.HttpClient.GetStringAsync(
+                                $"manga/{_targetId}/reviews?page=1");
                             reviews = JsonSerializer.Deserialize<Root>(json);
                             break;
                         }

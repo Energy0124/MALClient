@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Android.Runtime;
 using HtmlAgilityPack;
 using JikanDotNet;
 using MALClient.Models.Enums;
@@ -111,39 +112,38 @@ namespace MALClient.XShared.Comm.Profile
 
                 try
                 {
-                    var jikan = JikanClient.Jikan;
-                    var favs = await jikan.GetUserFavoritesAsync(_userName);
+                    var json = await JikanClient.UsersHttpClient.GetStringAsync(
+                        $"users/{Uri.EscapeDataString(_userName)}/favorites");
+                    var favs = JsonConvert.DeserializeObject<FavouritesRoot>(json);
                     foreach (var favAnime in favs.Data.Anime)
                     {
-                        current.FavouriteAnime.Add((int)favAnime.MalId);
-                    }  
-                    
+                        current.FavouriteAnime.Add(favAnime.MalId);
+                    }
+
                     foreach (var favAnime in favs.Data.Manga)
                     {
-                        current.FavouriteManga.Add((int)favAnime.MalId);
-                    }    
-                    
+                        current.FavouriteManga.Add(favAnime.MalId);
+                    }
+
                     foreach (var favChar in favs.Data.Characters)
                     {
                         current.FavouriteCharacters.Add(new AnimeCharacter
                         {
                             Id = favChar.MalId.ToString(),
                             Name = favChar.Name,
-                            ImgUrl = favChar.Images.JPG.ImageUrl,
+                            ImgUrl = favChar.ImageUrl,
                             FromAnime = favChar.Url.Contains("manga"),
-                            Notes = favChar.Title,
                             ShowId = favChar.MalId.ToString()
                         });
-                    }        
-                    
+                    }
+
                     foreach (var favChar in favs.Data.People)
                     {
                         current.FavouritePeople.Add(new AnimeStaffPerson
                         {
                             Id = favChar.MalId.ToString(),
                             Name = favChar.Name,
-                            ImgUrl = favChar.Images.JPG.ImageUrl,
-                            Notes = favChar.Title,
+                            ImgUrl = favChar.ImageUrl,
                         });
                     }
                 }
@@ -598,6 +598,30 @@ namespace MALClient.XShared.Comm.Profile
             var raw = await GetRequestResponse();
             return JsonConvert.DeserializeObject<List<HumStoryObject>>(raw,
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        }
+
+        [Preserve(AllMembers = true)]
+        public class FavouriteEntry
+        {
+            public int MalId { get; set; }
+            public string Name { get; set; }
+            public string Url { get; set; }
+            public string ImageUrl { get; set; }
+        }
+
+        [Preserve(AllMembers = true)]
+        public class Favourites
+        {
+            public List<FavouriteEntry> Anime { get; set; } = new List<FavouriteEntry>();
+            public List<FavouriteEntry> Manga { get; set; } = new List<FavouriteEntry>();
+            public List<FavouriteEntry> Characters { get; set; } = new List<FavouriteEntry>();
+            public List<FavouriteEntry> People { get; set; } = new List<FavouriteEntry>();
+        }
+
+        [Preserve(AllMembers = true)]
+        public class FavouritesRoot
+        {
+            public Favourites Data { get; set; }
         }
     }
 
