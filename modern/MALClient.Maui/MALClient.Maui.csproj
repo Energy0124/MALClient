@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net10.0-android</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>MALClient.Maui</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<!-- XShared pulls a few legacy packages (portable / Xamarin era) -->
+		<NoWarn>$(NoWarn);NU1701;NU1903</NoWarn>
+
+		<ApplicationTitle>MALClient</ApplicationTitle>
+		<!-- Separate id while the Xamarin app (com.drutol.malclient) is still around and its signing key isn't available -->
+		<ApplicationId>com.energy0124.malclient</ApplicationId>
+		<ApplicationDisplayVersion>2.0.0</ApplicationDisplayVersion>
+		<ApplicationVersion>200</ApplicationVersion>
+
+		<SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
+		<!-- Fast deployment keeps assemblies out of the apk, which breaks installing it outside of a debugger -->
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.png" Color="#ECECEB" ForegroundScale="0.75" />
+		<MauiSplashScreen Include="Resources\Splash\splash.png" Color="#2E51A2" BaseSize="160,160" />
+		<MauiImage Include="Resources\Images\*" />
+		<MauiFont Include="Resources\Fonts\*" />
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\MALClient.XShared\MALClient.XShared.csproj" />
+		<ProjectReference Include="..\MALClient.Adapters.Common\MALClient.Adapters.Common.csproj" />
+	</ItemGroup>
+
+</Project>

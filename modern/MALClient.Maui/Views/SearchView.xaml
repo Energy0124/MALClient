@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.SearchView">
+    <Grid RowDefinitions="Auto,Auto,*">
+        <SearchBar x:Name="QueryInput" Placeholder="Search..." SearchButtonPressed="QueryOnSubmitted"
+                   AutomationId="SearchInput" />
+        <HorizontalStackLayout Grid.Row="1" Spacing="16" Padding="16,0">
+            <RadioButton x:Name="AnimeMode" Content="Anime" IsChecked="True" CheckedChanged="ModeOnCheckedChanged" />
+            <RadioButton Content="Manga" />
+        </HorizontalStackLayout>
+        <CollectionView Grid.Row="2" x:Name="Results" ItemsSource="{Binding AnimeSearchItemViewModels}"
+                        SelectionMode="Single" SelectionChanged="ResultsOnSelectionChanged" AutomationId="SearchResults">
+            <CollectionView.EmptyView>
+                <Grid>
+                    <ActivityIndicator IsRunning="{Binding Loading}" VerticalOptions="Center" />
+                    <Label Text="No results." IsVisible="{Binding EmptyNoticeVisibility}"
+                           HorizontalTextAlignment="Center" VerticalOptions="Center" />
+                </Grid>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="12,8" ColumnDefinitions="80,*" ColumnSpacing="12">
+                        <Image Source="{Binding ImgUrl}" Aspect="AspectFill" HeightRequest="115" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label Text="{Binding Title}" FontAttributes="Bold" />
+                            <Label Style="{StaticResource Caption}">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding Type}" />
+                                        <Span Text="  ★ " />
+                                        <Span Text="{Binding GlobalScore}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                            <Label Text="{Binding Synopsis}" MaxLines="3" LineBreakMode="TailTruncation" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentView>

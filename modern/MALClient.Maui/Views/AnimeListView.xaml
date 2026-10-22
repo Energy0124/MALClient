@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.AnimeListView">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Padding="12,6" ColumnDefinitions="*,*" ColumnSpacing="8">
+            <Picker x:Name="SeasonPicker" Title="Season" ItemsSource="{Binding SeasonSelection}"
+                    ItemDisplayBinding="{Binding Name}" SelectedIndex="{Binding SeasonalUrlsSelectedIndex}"
+                    AutomationId="SeasonPicker" />
+            <Picker x:Name="StatusPicker" Grid.Column="1" Title="Status" AutomationId="StatusPicker"
+                    SelectedIndex="{Binding StatusSelectorSelectedIndex}" />
+        </Grid>
+
+        <CollectionView Grid.Row="1" x:Name="Items" ItemsSource="{Binding AnimeItems}" SelectionMode="Single"
+                        SelectionChanged="ItemsOnSelectionChanged" Scrolled="ItemsOnScrolled" AutomationId="AnimeItems">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="8" VerticalItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.EmptyView>
+                <Grid>
+                    <ActivityIndicator IsRunning="{Binding Loading}" VerticalOptions="Center" />
+                    <Label Text="{Binding EmptyNoticeContent}" IsVisible="{Binding EmptyNoticeVisibility}"
+                           HorizontalTextAlignment="Center" VerticalOptions="Center" Margin="24" />
+                </Grid>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="8,0" StrokeThickness="0" StrokeShape="RoundRectangle 6"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+                        <Grid RowDefinitions="220,Auto,Auto">
+                            <Image Source="{Binding ImgUrl}" Aspect="AspectFill" />
+                            <Label Text="{Binding GlobalScoreBind}" BackgroundColor="#AA000000" TextColor="White"
+                                   Padding="6,2" HorizontalOptions="End" VerticalOptions="Start" FontSize="12" />
+                            <Label Grid.Row="1" Text="{Binding Title}" FontAttributes="Bold" MaxLines="2"
+                                   LineBreakMode="TailTruncation" Margin="8,6,8,0" />
+                            <Label Grid.Row="2" Style="{StaticResource Caption}" Margin="8,2,8,8">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding MyEpisodesBind}" />
+                                        <Span Text="  " />
+                                        <Span Text="{Binding TopLeftInfoBind}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentView>

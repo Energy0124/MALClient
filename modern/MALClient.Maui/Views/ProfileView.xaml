@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.ProfileView">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="12" Spacing="4">
+                <Grid ColumnDefinitions="100,*" ColumnSpacing="12">
+                    <Image Source="{Binding CurrentData.User.ImgUrl}" Aspect="AspectFill" HeightRequest="140" />
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                        <Label Text="{Binding CurrentData.User.Name}" FontSize="22" FontAttributes="Bold"
+                               AutomationId="ProfileName" />
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding CurrentData.Details}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Label Style="{StaticResource Caption}">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Item1}" />
+                                                <Span Text=" " />
+                                                <Span Text="{Binding Item2}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Label Text="Anime" Style="{StaticResource SectionHeader}" />
+                <Label Text="{Binding CurrentData.AnimeDaysBind}" />
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Watching " />
+                            <Span Text="{Binding CurrentData.AnimeWatching}" FontAttributes="Bold" />
+                            <Span Text="   Completed " />
+                            <Span Text="{Binding CurrentData.AnimeCompleted}" FontAttributes="Bold" />
+                            <Span Text="   On hold " />
+                            <Span Text="{Binding CurrentData.AnimeOnHold}" FontAttributes="Bold" />
+                            <Span Text="   Dropped " />
+                            <Span Text="{Binding CurrentData.AnimeDropped}" FontAttributes="Bold" />
+                            <Span Text="   Planned " />
+                            <Span Text="{Binding CurrentData.AnimePlanned}" FontAttributes="Bold" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Mean score " />
+                            <Span Text="{Binding CurrentData.AnimeMean}" FontAttributes="Bold" />
+                            <Span Text="   Episodes " />
+                            <Span Text="{Binding CurrentData.AnimeEpisodes}" FontAttributes="Bold" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <Label Text="Manga" Style="{StaticResource SectionHeader}" />
+                <Label Text="{Binding CurrentData.MangaDaysBind}" />
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Reading " />
+                            <Span Text="{Binding CurrentData.MangaReading}" FontAttributes="Bold" />
+                            <Span Text="   Completed " />
+                            <Span Text="{Binding CurrentData.MangaCompleted}" FontAttributes="Bold" />
+                            <Span Text="   Planned " />
+                            <Span Text="{Binding CurrentData.MangaPlanned}" FontAttributes="Bold" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+
+                <Label Text="Favourite anime" Style="{StaticResource SectionHeader}" />
+                <CollectionView ItemsSource="{Binding FavAnime}" HeightRequest="200" SelectionMode="Single"
+                                SelectionChanged="AnimeOnSelectionChanged">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout WidthRequest="110">
+                                <Image Source="{Binding ImgUrl}" Aspect="AspectFill" HeightRequest="155" />
+                                <Label Text="{Binding Title}" FontSize="12" MaxLines="2" LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Recently updated anime" Style="{StaticResource SectionHeader}" />
+                <CollectionView ItemsSource="{Binding RecentAnime}" HeightRequest="200" SelectionMode="Single"
+                                SelectionChanged="AnimeOnSelectionChanged">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout WidthRequest="110">
+                                <Image Source="{Binding ImgUrl}" Aspect="AspectFill" HeightRequest="155" />
+                                <Label Text="{Binding Title}" FontSize="12" MaxLines="2" LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+        <ActivityIndicator IsRunning="{Binding LoadingVisibility}" IsVisible="{Binding LoadingVisibility}"
+                           VerticalOptions="Center" HorizontalOptions="Center" />
+    </Grid>
+</ContentView>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Pages.HostPage"
+             Title="MALClient"
+             BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray950}}">
+    <Grid RowDefinitions="Auto,*">
+        <!-- header bar -->
+        <Grid BackgroundColor="{StaticResource Primary}" ColumnDefinitions="Auto,Auto,*,Auto" Padding="4,0">
+            <Button Text="☰" Style="{StaticResource HeaderButton}" Clicked="MenuButtonOnClicked"
+                    AutomationId="MenuButton" />
+            <Button Grid.Column="1" Text="←" Style="{StaticResource HeaderButton}" Clicked="BackButtonOnClicked"
+                    IsVisible="{Binding NavigateMainBackButtonVisibility}" AutomationId="BackButton" />
+            <Label Grid.Column="2" Text="{Binding CurrentStatus}" TextColor="White" FontSize="18"
+                   VerticalOptions="Center" Margin="8,0" LineBreakMode="TailTruncation" AutomationId="CurrentStatus" />
+            <Button Grid.Column="3" Text="⟳" Style="{StaticResource HeaderButton}"
+                    Command="{Binding RefreshDataCommand}" IsVisible="{Binding RefreshButtonVisibility}"
+                    AutomationId="RefreshButton" />
+        </Grid>
+
+        <ContentView Grid.Row="1" x:Name="Host" />
+
+        <!-- loading popup for IMessageDialogProvider.ShowLoadingPopup -->
+        <Grid Grid.Row="1" x:Name="LoadingOverlay" IsVisible="False" BackgroundColor="#99000000">
+            <Border VerticalOptions="Center" HorizontalOptions="Center" Padding="24" StrokeShape="RoundRectangle 8"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}">
+                <VerticalStackLayout Spacing="8">
+                    <ActivityIndicator IsRunning="True" />
+                    <Label x:Name="LoadingTitle" FontAttributes="Bold" HorizontalOptions="Center" />
+                    <Label x:Name="LoadingContent" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

@@ -7,6 +7,7 @@
     <Project Path="MALClient.Adapters.Common/MALClient.Adapters.Common.csproj" />
   </Folder>
   <Folder Name="/Apps/">
+    <Project Path="MALClient.Maui/MALClient.Maui.csproj" />
     <Project Path="MALClient.WinUI/MALClient.WinUI.csproj">
       <Platform Solution="*|Any CPU" Project="x64" />
     </Project>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.SettingsView">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="8">
+            <Label Text="Account" Style="{StaticResource SectionHeader}" />
+            <Label x:Name="AccountLabel" />
+            <Button Text="Sign in / sign out" Clicked="AccountOnClicked" />
+
+            <Label Text="Appearance" Style="{StaticResource SectionHeader}" />
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="Dark theme" VerticalOptions="Center" />
+                <Switch Grid.Column="1" x:Name="DarkThemeSwitch" Toggled="DarkThemeOnToggled" />
+            </Grid>
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="Prefer English titles" VerticalOptions="Center" />
+                <Switch Grid.Column="1" x:Name="EnglishTitlesSwitch" Toggled="EnglishTitlesOnToggled" />
+            </Grid>
+
+            <Label Text="Storage" Style="{StaticResource SectionHeader}" />
+            <Button Text="Clear cached data" Clicked="ClearCacheOnClicked" />
+
+            <Label Text="About" Style="{StaticResource SectionHeader}" />
+            <Label x:Name="VersionLabel" />
+            <Label Text="MALClient is an unofficial MyAnimeList client." Style="{StaticResource Caption}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentView>

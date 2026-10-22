@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.AnimeDetailsView">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="12" Spacing="4">
+                <Grid ColumnDefinitions="140,*" ColumnSpacing="12">
+                    <Image Source="{Binding DetailImage}" Aspect="AspectFill" HeightRequest="200" VerticalOptions="Start" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                        <Label Text="{Binding Title}" FontSize="18" FontAttributes="Bold" AutomationId="DetailsTitle" />
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding LeftDetailsRow}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Label>
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Item1}" FontAttributes="Bold" />
+                                                <Span Text=": " />
+                                                <Span Text="{Binding Item2}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding RightDetailsRow}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Label>
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Item1}" FontAttributes="Bold" />
+                                                <Span Text=": " />
+                                                <Span Text="{Binding Item2}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- my list entry -->
+                <Button Text="Add to my list" Command="{Binding AddAnimeCommand}" IsVisible="{Binding AddAnimeVisibility}"
+                        Margin="0,12,0,0" AutomationId="AddToListButton" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="8" Margin="0,12,0,0" IsVisible="{Binding MyDetailsVisibility}">
+                    <Button Text="{Binding MyStatusBind}" Clicked="StatusOnClicked" AutomationId="MyStatusButton" />
+                    <Button Grid.Column="1" Text="{Binding MyScoreBind}" Clicked="ScoreOnClicked" AutomationId="MyScoreButton" />
+                </Grid>
+                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8" IsVisible="{Binding MyDetailsVisibility}">
+                    <Label Text="{Binding WatchedEpsLabel}" VerticalOptions="Center" />
+                    <Entry Grid.Column="1" Text="{Binding WatchedEpsInput}" Keyboard="Numeric" AutomationId="WatchedEpsInput" />
+                    <Button Grid.Column="2" Text="Update" Command="{Binding ChangeWatchedCommand}" />
+                </Grid>
+
+                <Label Text="Synopsis" Style="{StaticResource SectionHeader}" />
+                <Label Text="{Binding Synopsis}" AutomationId="Synopsis" />
+
+                <!-- lazily loaded sections -->
+                <HorizontalStackLayout Spacing="6" Margin="0,16,0,0">
+                    <Button Text="Details" Clicked="DetailsOnClicked" />
+                    <Button Text="Reviews" Clicked="ReviewsOnClicked" />
+                    <Button Text="Related" Clicked="RelatedOnClicked" />
+                    <Button Text="Similar" Clicked="RecommendationsOnClicked" />
+                </HorizontalStackLayout>
+
+                <VerticalStackLayout x:Name="DetailsSection" IsVisible="False">
+                    <Label Text="Information" Style="{StaticResource SectionHeader}" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Information}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Label>
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding Item1}" FontAttributes="Bold" />
+                                            <Span Text=": " />
+                                            <Span Text="{Binding Item2}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <Label Text="Statistics" Style="{StaticResource SectionHeader}" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding Stats}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Label>
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding Item1}" FontAttributes="Bold" />
+                                            <Span Text=": " />
+                                            <Span Text="{Binding Item2}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout x:Name="ReviewsSection" IsVisible="False" Spacing="12"
+                                     BindableLayout.ItemsSource="{Binding Reviews}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout>
+                                <Label FontAttributes="Bold">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="{Binding Author}" />
+                                            <Span Text="  ★ " />
+                                            <Span Text="{Binding OverallRating}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Text="{Binding Date}" Style="{StaticResource Caption}" />
+                                <Label Text="{Binding Review}" MaxLines="12" LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout x:Name="RelatedSection" IsVisible="False" BindableLayout.ItemsSource="{Binding RelatedAnime}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Label Margin="0,4">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="DetailsArgsOnTapped" />
+                                </Label.GestureRecognizers>
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding WholeRelation}" Style="{StaticResource Caption}" />
+                                        <Span Text="  " />
+                                        <Span Text="{Binding Title}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout x:Name="RecommendationsSection" IsVisible="False" Spacing="10"
+                                     BindableLayout.ItemsSource="{Binding Recommendations}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="70,*" ColumnSpacing="10">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="DetailsArgsOnTapped" />
+                                </Grid.GestureRecognizers>
+                                <Image Source="{Binding ImageUrl}" Aspect="AspectFill" HeightRequest="100" />
+                                <VerticalStackLayout Grid.Column="1">
+                                    <Label Text="{Binding Title}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Description}" MaxLines="4" LineBreakMode="TailTruncation" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+        <ActivityIndicator IsRunning="{Binding LoadingGlobal}" IsVisible="{Binding LoadingGlobal}"
+                           VerticalOptions="Center" HorizontalOptions="Center" />
+    </Grid>
+</ContentView>

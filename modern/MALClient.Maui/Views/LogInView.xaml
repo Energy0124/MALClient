@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.LogInView">
+    <Grid>
+        <VerticalStackLayout Padding="32" Spacing="16" VerticalOptions="Center">
+            <Label Text="Sign in with your MyAnimeList account." HorizontalTextAlignment="Center" FontSize="16" />
+            <Button Text="Sign in" Clicked="SignInOnClicked" AutomationId="SignInButton"
+                    IsEnabled="{Binding Authenticating, Converter={StaticResource InverseBool}}" />
+            <Button Text="Register on MyAnimeList" Command="{Binding NavigateRegister}"
+                    BackgroundColor="Transparent" TextColor="{StaticResource Primary}" />
+            <Button Text="Log out" Clicked="LogOutOnClicked" IsVisible="{Binding LogOutButtonVisibility}"
+                    BackgroundColor="Transparent" TextColor="{StaticResource Primary}" AutomationId="LogOutButton" />
+            <ActivityIndicator IsRunning="{Binding Authenticating}" IsVisible="{Binding Authenticating}" />
+        </VerticalStackLayout>
+        <WebView x:Name="AuthWebView" IsVisible="False" Navigating="AuthWebViewOnNavigating" />
+    </Grid>
+</ContentView>
