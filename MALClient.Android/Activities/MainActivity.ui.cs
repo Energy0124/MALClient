@@ -29,7 +29,7 @@ using Com.Shehabic.Droppy;
 using FFImageLoading;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Helpers;
-using GalaSoft.MvvmLight.Ioc;
+using MALClient.XShared.Ioc;
 using Java.Lang;
 using MALClient.Adapters;
 using MALClient.Android.BindingConverters;

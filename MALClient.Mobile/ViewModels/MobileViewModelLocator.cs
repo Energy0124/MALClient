@@ -1,5 +1,5 @@
 ﻿using CommonServiceLocator;
-using GalaSoft.MvvmLight.Ioc;
+using MALClient.XShared.Ioc;
 using MALClient.Adapters;
 using MALClient.Adapters.Credentials;
 using MALClient.UWP.Adapters;

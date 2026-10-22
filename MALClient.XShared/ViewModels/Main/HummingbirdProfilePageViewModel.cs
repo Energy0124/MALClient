@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using GalaSoft.MvvmLight;
+using MALClient.XShared.Mvvm;
 using MALClient.Models.Enums;
 using MALClient.Models.Models.ApiResponses;
 using MALClient.XShared.Comm.Profile;

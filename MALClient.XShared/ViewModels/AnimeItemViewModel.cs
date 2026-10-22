@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
+using MALClient.XShared.Mvvm;
+using MALClient.XShared.Ioc;
 using MALClient.Adapters;
 using MALClient.Models.Enums;
 using MALClient.Models.Interfaces;

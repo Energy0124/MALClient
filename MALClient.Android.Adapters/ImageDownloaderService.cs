@@ -10,7 +10,7 @@ using Android.Content;
 using Android.Net;
 using Android.Provider;
 using Android.Widget;
-using GalaSoft.MvvmLight.Ioc;
+using MALClient.XShared.Ioc;
 using MALClient.Adapters;
 using MALClient.XShared.ViewModels;
 using Environment = Android.OS.Environment;

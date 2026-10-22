@@ -5,7 +5,7 @@ using Android.App;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
-using GalaSoft.MvvmLight.Ioc;
+using MALClient.XShared.Ioc;
 using GalaSoft.MvvmLight.Views;
 using MALClient.Adapters;
 

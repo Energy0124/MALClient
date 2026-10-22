@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight.Ioc;
+using MALClient.XShared.Ioc;
 using MALClient.Adapters;
 using MALClient.Adapters.Credentials;
 using MALClient.Models.Interfaces;

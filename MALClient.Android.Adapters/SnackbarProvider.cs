@@ -9,7 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using GalaSoft.MvvmLight.Ioc;
+using MALClient.XShared.Ioc;
 using MALClient.Adapters;
 
 namespace MALClient.Android.Adapters

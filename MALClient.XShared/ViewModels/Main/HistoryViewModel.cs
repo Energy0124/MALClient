@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
+using MALClient.XShared.Mvvm;
 using MALClient.Models.Models.MalSpecific;
 using MALClient.XShared.Comm.Profile;
 using MALClient.XShared.Interfaces;

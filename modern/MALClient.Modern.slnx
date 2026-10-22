@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Shared/">
+    <Project Path="../MALClient.Adapters/MALClient.Adapters.csproj" />
+    <Project Path="../MALClient.Models/MALClient.Models.csproj" />
+    <Project Path="../MALClient.Utilities.BBCode/MALClient.Utilities.BBCode.csproj" />
+    <Project Path="../MALClient.XShared/MALClient.XShared.csproj" />
+    <Project Path="MALClient.Adapters.Common/MALClient.Adapters.Common.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="MALClient.XShared.Tests/MALClient.XShared.Tests.csproj" />
+  </Folder>
+</Solution>

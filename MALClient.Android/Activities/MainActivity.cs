@@ -14,7 +14,7 @@ using Android.Views;
 using Com.Orhanobut.Dialogplus;
 using Com.Shehabic.Droppy;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Ioc;
+using MALClient.XShared.Ioc;
 using MALClient.Android.DIalogs;
 using MALClient.Android.Fragments;
 using MALClient.Android.Resources;

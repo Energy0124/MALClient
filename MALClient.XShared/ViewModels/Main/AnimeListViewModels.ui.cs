@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using GalaSoft.MvvmLight.Command;
+using MALClient.XShared.Mvvm;
 using JikanDotNet;
 using MALClient.Models.Enums;
 using MALClient.Models.Models.Anime;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
+using MALClient.XShared.Mvvm;
 using MALClient.Models.Enums;
 using MALClient.Models.Models.MalSpecific;
 

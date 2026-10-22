@@ -23,7 +23,7 @@ using MALClient.XShared.Utils;
 using MALClient.XShared.ViewModels;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
-using GalaSoft.MvvmLight.Ioc;
+using MALClient.XShared.Ioc;
 using MALClient.Adapters;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using GalaSoft.MvvmLight;
+using MALClient.XShared.Mvvm;
 using JikanDotNet;
 using MALClient.Models.Enums;
 using MALClient.Models.Models.Anime;

@@ -1,4 +1,4 @@
-﻿using GalaSoft.MvvmLight.Ioc;
+﻿using MALClient.XShared.Ioc;
 using MALClient.Adapters;
 using MALClient.XShared.ViewModels;
 
