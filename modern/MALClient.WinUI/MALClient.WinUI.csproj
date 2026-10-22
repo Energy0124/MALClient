@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.22621.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
+    <RootNamespace>MALClient.WinUI</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Platforms>x86;x64;ARM64</Platforms>
+    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <LangVersion>latest</LangVersion>
+    <!-- XShared pulls a few legacy packages (portable / Xamarin era) -->
+    <NoWarn>$(NoWarn);NU1701;NU1903</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AppxPackageDir>AppPackages\</AppxPackageDir>
+    <PackageCertificateKeyFile>..\..\MALClient.Desktop\energy0124.pfx</PackageCertificateKeyFile>
+  </PropertyGroup>
+  <!-- Local, uncommitted signing secrets (PackageCertificatePassword), shared with the UWP desktop app -->
+  <Import Project="..\..\MALClient.Desktop\Signing.local.props" Condition="Exists('..\..\MALClient.Desktop\Signing.local.props')" />
+
+  <ItemGroup>
+    <Content Include="Assets\**" />
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.8.260921001" />
+    <PackageReference Include="CommunityToolkit.WinUI.Animations" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" Version="8.2.251219" />
+    <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="8.2.251219" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\MALClient.XShared\MALClient.XShared.csproj" />
+    <ProjectReference Include="..\MALClient.Adapters.Common\MALClient.Adapters.Common.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,18 @@
+﻿using System;
+using Microsoft.UI.Xaml.Data;
+
+namespace MALClient.UWP.Shared.XamlConverters
+{
+    public class StringToFlatStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            return (value as string).Replace('\n', ' ');
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

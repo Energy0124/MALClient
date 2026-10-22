@@ -2,11 +2,44 @@ using System;
 using System.Runtime.CompilerServices;
 using MALClient.Models.Enums;
 using MALClient.Models.Models.Library;
+using MALClient.Models.Models.Notifications;
+using MALClient.XShared.Interfaces;
 
 namespace MALClient.Adapters.Common
 {
     //services the old apps implemented on top of features the new ones don't (yet) have:
-    //live tiles, appcenter/hockeyapp telemetry, calendar export and pinned tiles
+    //live tiles, appcenter/hockeyapp telemetry, calendar export, pinned tiles and background notifications
+
+    public class NullNotificationsTaskManager : INotificationsTaskManager
+    {
+        public void StartTask(BgTasks task)
+        {
+        }
+
+        public void StopTask(BgTasks task)
+        {
+        }
+
+        public void CallTask(BgTasks task)
+        {
+        }
+    }
+
+    public class NullAiringNotificationsAdapter : IAiringNotificationsAdapter
+    {
+        public void ScheduleToast(AiringShowNotificationEntry entry)
+        {
+        }
+
+        public void RemoveToasts(string id)
+        {
+        }
+
+        public bool AreNotificationRegistered(string id)
+        {
+            return false;
+        }
+    }
 
     public class NullLiveTilesManager : ILiveTilesManager
     {

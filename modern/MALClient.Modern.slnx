@@ -6,6 +6,11 @@
     <Project Path="../MALClient.XShared/MALClient.XShared.csproj" />
     <Project Path="MALClient.Adapters.Common/MALClient.Adapters.Common.csproj" />
   </Folder>
+  <Folder Name="/Apps/">
+    <Project Path="MALClient.WinUI/MALClient.WinUI.csproj">
+      <Platform Solution="*|Any CPU" Project="x64" />
+    </Project>
+  </Folder>
   <Folder Name="/Tests/">
     <Project Path="MALClient.XShared.Tests/MALClient.XShared.Tests.csproj" />
   </Folder>
