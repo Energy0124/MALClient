@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.RecommendationsView">
+    <Grid RowDefinitions="Auto,*">
+        <Picker x:Name="ModePicker" Margin="12,4" SelectedIndexChanged="ModeOnSelectedIndexChanged"
+                AutomationId="RecommendationsMode" />
+
+        <!-- user recommendations: one pair at a time, like the pivot in the other apps -->
+        <Grid Grid.Row="1" x:Name="PairsPanel" RowDefinitions="Auto,*">
+            <Grid ColumnDefinitions="Auto,*,Auto" Padding="12,0">
+                <Button Text="‹" Clicked="PreviousOnClicked" WidthRequest="48" AutomationId="PreviousRecommendation" />
+                <Label Grid.Column="1" x:Name="PositionLabel" HorizontalOptions="Center" VerticalOptions="Center" />
+                <Button Grid.Column="2" Text="›" Clicked="NextOnClicked" WidthRequest="48" AutomationId="NextRecommendation" />
+            </Grid>
+            <ScrollView Grid.Row="1" x:Name="PairContent">
+                <ScrollView.GestureRecognizers>
+                    <SwipeGestureRecognizer Direction="Left" Swiped="NextOnClicked" />
+                    <SwipeGestureRecognizer Direction="Right" Swiped="PreviousOnClicked" />
+                </ScrollView.GestureRecognizers>
+                <VerticalStackLayout Padding="12" Spacing="8">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <VerticalStackLayout Spacing="4">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateDepDetails}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="If you liked" Style="{StaticResource Caption}" />
+                            <Image Source="{Binding Data.AnimeDependentData.ImgUrl}" Aspect="AspectFill" HeightRequest="220" />
+                            <Label Text="{Binding Data.DependentTitle}" FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+                            <VerticalStackLayout.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateRecDetails}" />
+                            </VerticalStackLayout.GestureRecognizers>
+                            <Label Text="then you might like" Style="{StaticResource Caption}" />
+                            <Image Source="{Binding Data.AnimeRecommendationData.ImgUrl}" Aspect="AspectFill" HeightRequest="220" />
+                            <Label Text="{Binding Data.RecommendationTitle}" FontAttributes="Bold" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <ActivityIndicator IsRunning="{Binding LoadingSpinnerVisibility}"
+                                       IsVisible="{Binding LoadingSpinnerVisibility}" />
+                    <!-- label, theirs, mine for each of the two shows -->
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding DetailItems}" Spacing="2">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="70,*,*" ColumnSpacing="8">
+                                    <Label Text="{Binding Item1}" FontAttributes="Bold" />
+                                    <Label Grid.Column="1">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Item2}" />
+                                                <Span Text="  " />
+                                                <Span Text="{Binding Item3}" Style="{StaticResource CaptionSpan}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                    <Label Grid.Column="2">
+                                        <Label.FormattedText>
+                                            <FormattedString>
+                                                <Span Text="{Binding Item4}" />
+                                                <Span Text="  " />
+                                                <Span Text="{Binding Item5}" Style="{StaticResource CaptionSpan}" />
+                                            </FormattedString>
+                                        </Label.FormattedText>
+                                    </Label>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+
+                    <Label Text="{Binding Data.Description}" Margin="0,8,0,0" />
+                </VerticalStackLayout>
+            </ScrollView>
+        </Grid>
+
+        <!-- suggestions based on the user's list -->
+        <CollectionView Grid.Row="1" x:Name="Personalized" IsVisible="False" SelectionMode="Single"
+                        SelectionChanged="PersonalizedOnSelectionChanged" AutomationId="PersonalizedRecommendations">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" VerticalItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="8,0" StrokeThickness="0" StrokeShape="RoundRectangle 6"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+                        <Grid RowDefinitions="220,Auto">
+                            <Image Source="{Binding ImgUrl}" Aspect="AspectFill" />
+                            <Label Grid.Row="1" Text="{Binding Title}" FontAttributes="Bold" MaxLines="2"
+                                   LineBreakMode="TailTruncation" Margin="8,6,8,8" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ActivityIndicator Grid.Row="1" IsRunning="{Binding Loading}" IsVisible="{Binding Loading}" VerticalOptions="Center" HorizontalOptions="Center" />
+    </Grid>
+</ContentView>

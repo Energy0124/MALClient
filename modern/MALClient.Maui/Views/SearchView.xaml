@@ -7,7 +7,8 @@
                    AutomationId="SearchInput" />
         <HorizontalStackLayout Grid.Row="1" Spacing="16" Padding="16,0">
             <RadioButton x:Name="AnimeMode" Content="Anime" IsChecked="True" CheckedChanged="ModeOnCheckedChanged" />
-            <RadioButton Content="Manga" />
+            <RadioButton x:Name="MangaMode" Content="Manga" />
+            <RadioButton x:Name="CharactersMode" Content="Characters" CheckedChanged="CharactersOnCheckedChanged" />
         </HorizontalStackLayout>
         <CollectionView Grid.Row="2" x:Name="Results" ItemsSource="{Binding AnimeSearchItemViewModels}"
                         SelectionMode="Single" SelectionChanged="ResultsOnSelectionChanged" AutomationId="SearchResults">

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.StaffDetailsView">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="12" Spacing="4">
+                <Grid ColumnDefinitions="140,*" ColumnSpacing="12">
+                    <Image Source="{Binding Data.ImgUrl}" Aspect="AspectFill" HeightRequest="200" VerticalOptions="Start" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                        <Label Text="{Binding Data.Name}" FontSize="20" FontAttributes="Bold" AutomationId="StaffName" />
+                        <Button Text="{Binding FavouriteViewModel.IsFavourite, Converter={StaticResource FavouriteLabel}}"
+                                Command="{Binding FavouriteViewModel.ToggleFavouriteCommand}"
+                                IsEnabled="{Binding FavouriteViewModel.IsFavouriteButtonEnabled}" />
+                        <Button Text="Open in browser" Command="{Binding OpenInMalCommand}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Data.Details}" Margin="0,12,0,0" Spacing="2">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding .}" />
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Label Text="Voice acting roles" Style="{StaticResource SectionHeader}" />
+                <Label Text="No voice acting roles." IsVisible="{Binding IsNoVoiceActingRolesNoticeVisible}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Data.ShowCharacterPairs}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="56,*,*,56" ColumnSpacing="10">
+                                <Image Source="{Binding AnimeLightEntry.ImgUrl}" Aspect="AspectFill" HeightRequest="80">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="ShowOnTapped" />
+                                    </Image.GestureRecognizers>
+                                </Image>
+                                <Label Grid.Column="1" Text="{Binding AnimeLightEntry.Title}" FontAttributes="Bold"
+                                       VerticalOptions="Center">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="ShowOnTapped" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                                <VerticalStackLayout Grid.Column="2" VerticalOptions="Center">
+                                    <VerticalStackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="CharacterOnTapped" />
+                                    </VerticalStackLayout.GestureRecognizers>
+                                    <Label Text="{Binding AnimeCharacter.Name}" HorizontalTextAlignment="End" />
+                                    <Label Text="{Binding AnimeCharacter.Notes}" Style="{StaticResource Caption}"
+                                           HorizontalTextAlignment="End" />
+                                </VerticalStackLayout>
+                                <Image Grid.Column="3" Source="{Binding AnimeCharacter.ImgUrl}" Aspect="AspectFill"
+                                       HeightRequest="80">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="CharacterOnTapped" />
+                                    </Image.GestureRecognizers>
+                                </Image>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Label Text="Staff positions" Style="{StaticResource SectionHeader}" />
+                <Label Text="No staff positions." IsVisible="{Binding IsNoProductionRolesNoticeVisible}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Data.StaffPositions}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="56,*" ColumnSpacing="10">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="PositionOnTapped" />
+                                </Grid.GestureRecognizers>
+                                <Image Source="{Binding ImgUrl}" Aspect="AspectFill" HeightRequest="80" />
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="{Binding Title}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Notes}" Style="{StaticResource Caption}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+        <ActivityIndicator IsRunning="{Binding Loading}" IsVisible="{Binding Loading}"
+                           VerticalOptions="Center" HorizontalOptions="Center" />
+    </Grid>
+</ContentView>

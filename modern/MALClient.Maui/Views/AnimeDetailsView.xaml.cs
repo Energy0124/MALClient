@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using MALClient.Maui.Pages;
 using MALClient.Models.Interfaces;
 using MALClient.XShared.NavArgs;
@@ -15,14 +16,42 @@ namespace MALClient.Maui.Views
 
         private AnimeDetailsPageViewModel ViewModel => ViewModelLocator.AnimeDetails;
 
+        //DetailsPivotSelectedIndex is 1 + the open section's index here, 0 when none is open
+        private View[] Sections => new View[]
+            {DetailsSection, ReviewsSection, RelatedSection, RecommendationsSection, CharactersSection};
+
         public void OnNavigatedTo(object args)
         {
             BindingContext = ViewModel;
+            ViewModel.PropertyChanged += ViewModelOnPropertyChanged;
             ViewModel.Init(args as AnimeDetailsPageNavigationArgs);
         }
 
         public void OnNavigatedFrom()
         {
+            ViewModel.PropertyChanged -= ViewModelOnPropertyChanged;
+        }
+
+        //Init restores the index the page was left with, e.g. when coming back from a character
+        private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(AnimeDetailsPageViewModel.DetailsPivotSelectedIndex))
+                return;
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                var index = ViewModel.DetailsPivotSelectedIndex - 1;
+                if (index < 0 || index >= Sections.Length || Sections[index].IsVisible)
+                    return;
+                EventHandler open = index switch
+                {
+                    0 => DetailsOnClicked,
+                    1 => ReviewsOnClicked,
+                    2 => RelatedOnClicked,
+                    3 => RecommendationsOnClicked,
+                    _ => CharactersOnClicked
+                };
+                open(this, EventArgs.Empty);
+            });
         }
 
         private async void StatusOnClicked(object sender, EventArgs e)
@@ -43,8 +72,10 @@ namespace MALClient.Maui.Views
 
         private void ShowSection(View section)
         {
-            foreach (var view in new View[] {DetailsSection, ReviewsSection, RelatedSection, RecommendationsSection})
+            var sections = Sections;
+            foreach (var view in sections)
                 view.IsVisible = view == section;
+            ViewModel.DetailsPivotSelectedIndex = Array.IndexOf(sections, section) + 1;
         }
 
         private void DetailsOnClicked(object sender, EventArgs e)
@@ -69,6 +100,33 @@ namespace MALClient.Maui.Views
         {
             ShowSection(RecommendationsSection);
             ViewModel.LoadRecommendations();
+        }
+
+        private void CharactersOnClicked(object sender, EventArgs e)
+        {
+            ShowSection(CharactersSection);
+            if (ViewModel.AnimeStaffData == null)
+                ViewModel.LoadCharacters();
+        }
+
+        private void CharacterOnTapped(object sender, TappedEventArgs e)
+        {
+            if ((sender as BindableObject)?.BindingContext is
+                AnimeDetailsPageViewModel.AnimeStaffDataViewModels.AnimeCharacterStaffModelViewModel pair)
+                ViewModel.NavigateCharacterDetailsCommand.Execute(pair.AnimeCharacter.Data);
+        }
+
+        private void VoiceActorOnTapped(object sender, TappedEventArgs e)
+        {
+            if ((sender as BindableObject)?.BindingContext is
+                AnimeDetailsPageViewModel.AnimeStaffDataViewModels.AnimeCharacterStaffModelViewModel pair)
+                ViewModel.NavigateStaffDetailsCommand.Execute(pair.AnimeStaffPerson.Data);
+        }
+
+        private void StaffOnTapped(object sender, TappedEventArgs e)
+        {
+            if ((sender as BindableObject)?.BindingContext is FavouriteViewModel person)
+                ViewModel.NavigateStaffDetailsCommand.Execute(person.Data);
         }
 
         //related and recommended entries both open their own details page

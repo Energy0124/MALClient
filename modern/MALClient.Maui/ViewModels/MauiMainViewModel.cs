@@ -131,7 +131,7 @@ namespace MALClient.Maui.ViewModels
                     break;
                 case PageIndex.PageSearch:
                 case PageIndex.PageMangaSearch:
-                    if (CurrentMainPage != PageIndex.PageSearch && CurrentMainPage != PageIndex.PageMangaSearch)
+                    if (!IsSearchPage(CurrentMainPage))
                         _searchStateBeforeNavigatingToSearch = SearchToggleStatus;
 
                     if (args is SearchPageNavigationArgs searchArg && string.IsNullOrWhiteSpace(searchArg.Query))
@@ -139,6 +139,49 @@ namespace MALClient.Maui.ViewModels
                     HideSearchStuff();
                     CurrentStatus = index == PageIndex.PageMangaSearch ? "Manga search" : "Anime search";
                     MainNavigationRequested?.Invoke(typeof(SearchView), args);
+                    break;
+                case PageIndex.PageCharacterSearch:
+                    if (!IsSearchPage(CurrentMainPage))
+                        _searchStateBeforeNavigatingToSearch = SearchToggleStatus;
+                    //CharacterSearchViewModel listens to OnSearchQuerySubmitted, which only fires while search is
+                    //toggled on and locked to the search page
+                    SearchToggleLock = true;
+                    ToggleSearchStuff();
+                    CurrentStatus = "Character search";
+                    MainNavigationRequested?.Invoke(typeof(CharacterSearchView), args);
+                    break;
+                case PageIndex.PageCharacterDetails:
+                    HideSearchStuff();
+                    RefreshButtonVisibility = true;
+                    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.CharacterDetails.RefreshData());
+                    if (CurrentMainPage == PageIndex.PageCharacterDetails)
+                        ViewModelLocator.CharacterDetails.Init(args as CharacterDetailsNavigationArgs);
+                    else
+                        MainNavigationRequested?.Invoke(typeof(CharacterDetailsView), args);
+                    break;
+                case PageIndex.PageStaffDetails:
+                    HideSearchStuff();
+                    RefreshButtonVisibility = true;
+                    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.StaffDetails.RefreshData());
+                    if (CurrentMainPage == PageIndex.PageStaffDetails)
+                        ViewModelLocator.StaffDetails.Init(args as StaffDetailsNaviagtionArgs);
+                    else
+                        MainNavigationRequested?.Invoke(typeof(StaffDetailsView), args);
+                    break;
+                case PageIndex.PageRecomendations:
+                    HideSearchStuff();
+                    RefreshButtonVisibility = true;
+                    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.Recommendations.PopulateData(true));
+                    ViewModelLocator.GeneralHamburger.SetActiveButton(HamburgerButtons.Recommendations);
+                    MainNavigationRequested?.Invoke(typeof(RecommendationsView), args);
+                    break;
+                case PageIndex.PageHistory:
+                    HideSearchStuff();
+                    RefreshButtonVisibility = true;
+                    RefreshDataCommand = new RelayCommand(() => ViewModelLocator.History.Init(null, true));
+                    ViewModelLocator.GeneralHamburger.SetActiveButton(HamburgerButtons.History);
+                    CurrentStatus = $"History - {(args as HistoryNavigationArgs)?.Source ?? Credentials.UserName}";
+                    MainNavigationRequested?.Invoke(typeof(HistoryView), args);
                     break;
                 case PageIndex.PageLogIn:
                     HideSearchStuff();
@@ -165,6 +208,12 @@ namespace MALClient.Maui.ViewModels
             CurrentMainPage = index;
             CurrentMainPageKind = index;
             RaisePropertyChanged(() => SearchToggleLock);
+        }
+
+        private static bool IsSearchPage(PageIndex? page)
+        {
+            return page == PageIndex.PageSearch || page == PageIndex.PageMangaSearch ||
+                   page == PageIndex.PageCharacterSearch;
         }
 
         public override string CurrentOffStatus

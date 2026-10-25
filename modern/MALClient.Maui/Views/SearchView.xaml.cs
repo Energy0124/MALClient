@@ -22,7 +22,7 @@ namespace MALClient.Maui.Views
             _args = args as SearchPageNavigationArgs ?? new SearchPageNavigationArgs();
             //the search box lives on this page, not in a main page toolbar
             _args.DisplayMode = SearchPageDisplayModes.Off;
-            AnimeMode.IsChecked = _args.Anime;
+            (_args.Anime ? AnimeMode : MangaMode).IsChecked = true;
             QueryInput.Text = _args.Query;
             ViewModel.Init(_args);
             if (!string.IsNullOrWhiteSpace(_args.Query))
@@ -39,9 +39,17 @@ namespace MALClient.Maui.Views
             ViewModel.SubmitQuery(QueryInput.Text ?? string.Empty);
         }
 
+        private void CharactersOnCheckedChanged(object sender, CheckedChangedEventArgs e)
+        {
+            if (e.Value)
+                ViewModelLocator.GeneralMain.Navigate(PageIndex.PageCharacterSearch,
+                    new SearchPageNavigationArgs {Query = QueryInput.Text});
+        }
+
         private void ModeOnCheckedChanged(object sender, CheckedChangedEventArgs e)
         {
-            if (_args == null || _args.Anime == AnimeMode.IsChecked)
+            //the characters option navigates to its own page instead
+            if (_args == null || CharactersMode.IsChecked || _args.Anime == AnimeMode.IsChecked)
                 return;
 
             _args.Anime = AnimeMode.IsChecked;

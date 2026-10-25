@@ -28,6 +28,9 @@
                     </VerticalStackLayout>
                 </Grid>
 
+                <Button Text="History" Command="{Binding NavigateHistoryCommand}" HorizontalOptions="Start"
+                        Margin="0,8,0,0" AutomationId="ProfileHistoryButton" />
+
                 <Label Text="Anime" Style="{StaticResource SectionHeader}" />
                 <Label Text="{Binding CurrentData.AnimeDaysBind}" />
                 <Label>
@@ -83,6 +86,38 @@
                             <VerticalStackLayout WidthRequest="110">
                                 <Image Source="{Binding ImgUrl}" Aspect="AspectFill" HeightRequest="155" />
                                 <Label Text="{Binding Title}" FontSize="12" MaxLines="2" LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Favourite characters" Style="{StaticResource SectionHeader}" />
+                <CollectionView ItemsSource="{Binding CurrentData.FavouriteCharacters}" HeightRequest="200" SelectionMode="Single"
+                                SelectionChanged="CharactersOnSelectionChanged">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout WidthRequest="110">
+                                <Image Source="{Binding ImgUrl}" Aspect="AspectFill" HeightRequest="155" />
+                                <Label Text="{Binding Name}" FontSize="12" MaxLines="2" LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="Favourite people" Style="{StaticResource SectionHeader}" />
+                <CollectionView ItemsSource="{Binding CurrentData.FavouritePeople}" HeightRequest="200" SelectionMode="Single"
+                                SelectionChanged="PeopleOnSelectionChanged">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="8" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <VerticalStackLayout WidthRequest="110">
+                                <Image Source="{Binding ImgUrl}" Aspect="AspectFill" HeightRequest="155" />
+                                <Label Text="{Binding Name}" FontSize="12" MaxLines="2" LineBreakMode="TailTruncation" />
                             </VerticalStackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.HistoryView">
+    <Grid>
+        <ScrollView>
+            <!-- History is a date -> (show, entries) dictionary -->
+            <VerticalStackLayout Padding="12" BindableLayout.ItemsSource="{Binding History}" AutomationId="HistoryList">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="{Binding Key}" Style="{StaticResource SectionHeader}" />
+                            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Value}" Spacing="8">
+                                <BindableLayout.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid ColumnDefinitions="64,*" ColumnSpacing="12">
+                                            <Grid.GestureRecognizers>
+                                                <TapGestureRecognizer Tapped="EntryOnTapped" />
+                                            </Grid.GestureRecognizers>
+                                            <Image Source="{Binding Item1.ImgUrl}" Aspect="AspectFill" HeightRequest="90"
+                                                   VerticalOptions="Start" />
+                                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                <Label Text="{Binding Item1.Title}" FontAttributes="Bold" />
+                                                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Item2}">
+                                                    <BindableLayout.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Label Style="{StaticResource Caption}">
+                                                                <Label.FormattedText>
+                                                                    <FormattedString>
+                                                                        <Span Text="{Binding ShowUnit}" />
+                                                                        <Span Text=" " />
+                                                                        <Span Text="{Binding WatchedEpisode}" />
+                                                                        <Span Text="  ·  " />
+                                                                        <Span Text="{Binding Date}" />
+                                                                    </FormattedString>
+                                                                </Label.FormattedText>
+                                                            </Label>
+                                                        </DataTemplate>
+                                                    </BindableLayout.ItemTemplate>
+                                                </VerticalStackLayout>
+                                            </VerticalStackLayout>
+                                        </Grid>
+                                    </DataTemplate>
+                                </BindableLayout.ItemTemplate>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+        </ScrollView>
+        <Label Text="No history entries." IsVisible="{Binding HistoryEmptyNoticeVisibility}"
+               HorizontalOptions="Center" VerticalOptions="Center" />
+        <ActivityIndicator IsRunning="{Binding LoadingVisibility}" IsVisible="{Binding LoadingVisibility}"
+                           VerticalOptions="Center" HorizontalOptions="Center" />
+    </Grid>
+</ContentView>

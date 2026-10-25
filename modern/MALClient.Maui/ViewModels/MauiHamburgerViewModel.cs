@@ -53,6 +53,8 @@ namespace MALClient.Maui.ViewModels
                 new HamburgerMenuItem(HamburgerButtons.TopAnime, "Top anime",
                     () => Navigate(PageIndex.PageTopAnime,
                         AnimeListPageNavigationArgs.TopAnime(TopAnimeType.General))),
+                new HamburgerMenuItem(HamburgerButtons.Recommendations, "Recommendations",
+                    () => Navigate(PageIndex.PageRecomendations, null)),
                 new HamburgerMenuItem(HamburgerButtons.AnimeSearch, "Search",
                     () => Navigate(PageIndex.PageSearch, new SearchPageNavigationArgs())),
                 new HamburgerMenuItem(HamburgerButtons.MangaList, "Manga list",
@@ -60,6 +62,8 @@ namespace MALClient.Maui.ViewModels
                 new HamburgerMenuItem(HamburgerButtons.Profile, "Profile",
                     () => Navigate(PageIndex.PageProfile,
                         new ProfilePageNavigationArgs {TargetUser = Credentials.UserName})),
+                new HamburgerMenuItem(HamburgerButtons.History, "History",
+                    () => Navigate(PageIndex.PageHistory, null)),
                 new HamburgerMenuItem(HamburgerButtons.Settings, "Settings",
                     () => Navigate(PageIndex.PageSettings, null)),
             };

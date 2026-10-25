@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.CharacterDetailsView">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="12" Spacing="4">
+                <Grid ColumnDefinitions="140,*" ColumnSpacing="12">
+                    <Image Source="{Binding Data.ImgUrl}" Aspect="AspectFill" HeightRequest="200" VerticalOptions="Start" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                        <Label Text="{Binding Data.Name}" FontSize="20" FontAttributes="Bold" AutomationId="CharacterName" />
+                        <Label Style="{StaticResource Caption}">
+                            <Label.FormattedText>
+                                <FormattedString>
+                                    <Span Text="★ " />
+                                    <Span Text="{Binding Data.TotalFavs}" />
+                                    <Span Text=" favourites" />
+                                </FormattedString>
+                            </Label.FormattedText>
+                        </Label>
+                        <Button Text="{Binding FavouriteViewModel.IsFavourite, Converter={StaticResource FavouriteLabel}}"
+                                Command="{Binding FavouriteViewModel.ToggleFavouriteCommand}"
+                                IsEnabled="{Binding FavouriteViewModel.IsFavouriteButtonEnabled}" />
+                        <Button Text="Open in browser" Command="{Binding OpenInMalCommand}" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Label Text="{Binding Data.Content}" Margin="0,12,0,0" />
+                <Button Text="Show spoiler" x:Name="SpoilerButton" IsVisible="{Binding SpoilerButtonVisibility}"
+                        Clicked="SpoilerOnClicked" HorizontalOptions="Start" />
+                <Label x:Name="SpoilerLabel" Text="{Binding Data.SpoilerContent}" IsVisible="False" />
+
+                <Label Text="Voice actors" Style="{StaticResource SectionHeader}" IsVisible="{Binding VoiceActors, Converter={StaticResource HasItems}}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding VoiceActors}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="56,*" ColumnSpacing="10">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="VoiceActorOnTapped" />
+                                </Grid.GestureRecognizers>
+                                <Image Source="{Binding Data.ImgUrl}" Aspect="AspectFill" HeightRequest="80" />
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="{Binding Data.Name}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Data.Notes}" Style="{StaticResource Caption}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Label Text="Animeography" Style="{StaticResource SectionHeader}" IsVisible="{Binding AnimeographyVisibility}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Data.Animeography}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="56,*" ColumnSpacing="10">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="AnimeOnTapped" />
+                                </Grid.GestureRecognizers>
+                                <Image Source="{Binding ImgUrl}" Aspect="AspectFill" HeightRequest="80" />
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="{Binding Title}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Notes}" Style="{StaticResource Caption}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <Label Text="Mangaography" Style="{StaticResource SectionHeader}" IsVisible="{Binding MangaographyVisibility}" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Data.Mangaography}" Spacing="8">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="56,*" ColumnSpacing="10">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="MangaOnTapped" />
+                                </Grid.GestureRecognizers>
+                                <Image Source="{Binding ImgUrl}" Aspect="AspectFill" HeightRequest="80" />
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="{Binding Title}" FontAttributes="Bold" />
+                                    <Label Text="{Binding Notes}" Style="{StaticResource Caption}" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+        <ActivityIndicator IsRunning="{Binding Loading}" IsVisible="{Binding Loading}"
+                           VerticalOptions="Center" HorizontalOptions="Center" />
+    </Grid>
+</ContentView>

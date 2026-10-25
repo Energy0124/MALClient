@@ -65,6 +65,8 @@
                     <Button Text="Related" Clicked="RelatedOnClicked" />
                     <Button Text="Similar" Clicked="RecommendationsOnClicked" />
                 </HorizontalStackLayout>
+                <Button Text="Characters &amp; staff" Clicked="CharactersOnClicked" IsVisible="{Binding AnimeMode}"
+                        HorizontalOptions="Start" AutomationId="CharactersButton" />
 
                 <VerticalStackLayout x:Name="DetailsSection" IsVisible="False">
                     <Label Text="Information" Style="{StaticResource SectionHeader}" />
@@ -139,6 +141,63 @@
                             </Label>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <VerticalStackLayout x:Name="CharactersSection" IsVisible="False" Spacing="8">
+                    <ActivityIndicator IsRunning="{Binding LoadingCharactersVisibility}"
+                                       IsVisible="{Binding LoadingCharactersVisibility}" />
+                    <Label Text="Characters" Style="{StaticResource SectionHeader}" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding AnimeStaffData.AnimeCharacterPairs}" Spacing="8">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="56,*,*,56" ColumnSpacing="10">
+                                    <Image Source="{Binding AnimeCharacter.Data.ImgUrl}" Aspect="AspectFill" HeightRequest="80">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="CharacterOnTapped" />
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <VerticalStackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="CharacterOnTapped" />
+                                        </VerticalStackLayout.GestureRecognizers>
+                                        <Label Text="{Binding AnimeCharacter.Data.Name}" FontAttributes="Bold" />
+                                        <Label Text="{Binding AnimeCharacter.Data.Notes}" Style="{StaticResource Caption}" />
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="2" VerticalOptions="Center">
+                                        <VerticalStackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="VoiceActorOnTapped" />
+                                        </VerticalStackLayout.GestureRecognizers>
+                                        <Label Text="{Binding AnimeStaffPerson.Data.Name}" HorizontalTextAlignment="End" />
+                                        <Label Text="{Binding AnimeStaffPerson.Data.Notes}" Style="{StaticResource Caption}"
+                                               HorizontalTextAlignment="End" />
+                                    </VerticalStackLayout>
+                                    <Image Grid.Column="3" Source="{Binding AnimeStaffPerson.Data.ImgUrl}" Aspect="AspectFill"
+                                           HeightRequest="80">
+                                        <Image.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="VoiceActorOnTapped" />
+                                        </Image.GestureRecognizers>
+                                    </Image>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
+                    <Label Text="Staff" Style="{StaticResource SectionHeader}" />
+                    <VerticalStackLayout BindableLayout.ItemsSource="{Binding AnimeStaffData.AnimeStaff}" Spacing="8">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="56,*" ColumnSpacing="10">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="StaffOnTapped" />
+                                    </Grid.GestureRecognizers>
+                                    <Image Source="{Binding Data.ImgUrl}" Aspect="AspectFill" HeightRequest="80" />
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                        <Label Text="{Binding Data.Name}" FontAttributes="Bold" />
+                                        <Label Text="{Binding Data.Notes}" Style="{StaticResource Caption}" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </VerticalStackLayout>
                 </VerticalStackLayout>
 
                 <VerticalStackLayout x:Name="RecommendationsSection" IsVisible="False" Spacing="10"
