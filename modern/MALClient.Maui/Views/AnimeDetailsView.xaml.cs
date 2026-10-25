@@ -102,6 +102,13 @@ namespace MALClient.Maui.Views
             ViewModel.LoadRecommendations();
         }
 
+        private void AirNotificationsOnToggled(object sender, ToggledEventArgs e)
+        {
+            //the binding also lands here when the view model changes
+            if (e.Value != ViewModel.AreAirNotificationsEnabled)
+                ViewModel.ToggleAirNotificationsCommand.Execute(null);
+        }
+
         private void CharactersOnClicked(object sender, EventArgs e)
         {
             ShowSection(CharactersSection);

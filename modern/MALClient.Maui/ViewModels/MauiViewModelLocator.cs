@@ -3,6 +3,7 @@ using MALClient.Adapters.Common;
 using MALClient.Adapters.Credentials;
 using MALClient.Maui.Adapters;
 using MALClient.Maui.Managers;
+using MALClient.Maui.Notifications;
 using MALClient.XShared.Interfaces;
 using MALClient.XShared.Ioc;
 using MALClient.XShared.ViewModels;
@@ -35,7 +36,7 @@ namespace MALClient.Maui.ViewModels
             SimpleIoc.Default.Register<IMessageDialogProvider, MessageDialogProvider>();
             SimpleIoc.Default.Register<IImageDownloaderService, ImageDownloaderService>();
             SimpleIoc.Default.Register<ITelemetryProvider, NullTelemetryProvider>();
-            SimpleIoc.Default.Register<INotificationsTaskManager, NullNotificationsTaskManager>();
+            SimpleIoc.Default.Register<INotificationsTaskManager, NotificationsTaskManager>();
             SimpleIoc.Default.Register<ISchdeuledJobsManger, ScheduledJobsManager>();
             SimpleIoc.Default.Register<ICssManager, CssManager>();
             SimpleIoc.Default.Register<IChangeLogProvider, ChangeLogProvider>();
@@ -43,7 +44,7 @@ namespace MALClient.Maui.ViewModels
             SimpleIoc.Default.Register<ISnackbarProvider, SnackbarProvider>();
             SimpleIoc.Default.Register<IConnectionInfoProvider, ConnectionInfoProvider>();
             SimpleIoc.Default.Register<IDispatcherAdapter, DispatcherAdapter>();
-            SimpleIoc.Default.Register<IAiringNotificationsAdapter, NullAiringNotificationsAdapter>();
+            SimpleIoc.Default.Register<IAiringNotificationsAdapter, AiringNotificationsAdapter>();
             SimpleIoc.Default.Register<IDialogsProvider, DialogsProvider>();
             SimpleIoc.Default.Register<IShareProvider, ShareProvider>();
             SimpleIoc.Default.Register<ILiveTilesManager, NullLiveTilesManager>();

@@ -175,6 +175,14 @@ namespace MALClient.Maui.ViewModels
                     ViewModelLocator.GeneralHamburger.SetActiveButton(HamburgerButtons.Recommendations);
                     MainNavigationRequested?.Invoke(typeof(RecommendationsView), args);
                     break;
+                case PageIndex.PageCalendar:
+                    HideSearchStuff();
+                    RefreshButtonVisibility = true;
+                    RefreshDataCommand = ViewModelLocator.CalendarPage.RefreshCalendarCommand;
+                    ViewModelLocator.GeneralHamburger.SetActiveButton(HamburgerButtons.Calendar);
+                    CurrentStatus = "Calendar";
+                    MainNavigationRequested?.Invoke(typeof(CalendarView), args);
+                    break;
                 case PageIndex.PageHistory:
                     HideSearchStuff();
                     RefreshButtonVisibility = true;

@@ -20,7 +20,46 @@ namespace MALClient.Maui.Views
             DarkThemeSwitch.IsToggled = Settings.SelectedTheme == 1;
             EnglishTitlesSwitch.IsToggled = Settings.PreferEnglishTitles;
             VersionLabel.Text = $"Version {AppInfo.Current.VersionString}";
+            ViewModelSections.BindingContext = ViewModel;
+            RefreshTimePicker.ItemsSource = RefreshTimes.Select(minutes => $"{minutes} minutes").ToList();
+            RefreshTimePicker.SelectedIndex = Array.IndexOf(RefreshTimes, ViewModel.NotificationsRefreshTime);
+            BuildNotificationTypes();
             _loading = false;
+        }
+
+        private static readonly int[] RefreshTimes = {15, 30, 45, 60, 120};
+
+        private static SettingsViewModelBase ViewModel => ViewModelLocator.Settings;
+
+        private void BuildNotificationTypes()
+        {
+            NotificationTypes.Children.Clear();
+            //WatchedTopic marks replies found by the app's own topic watcher, which isn't filtered by type
+            foreach (var type in Enum.GetValues<MalNotificationsTypes>().Where(type =>
+                         type != MalNotificationsTypes.Generic && type != MalNotificationsTypes.WatchedTopic))
+            {
+                var toggle = new CheckBox {IsChecked = ViewModel.EnabledNotificationTypes.HasFlag(type)};
+                toggle.CheckedChanged += (sender, e) =>
+                {
+                    if (e.Value)
+                        ViewModel.EnabledNotificationTypes |= type;
+                    else
+                        ViewModel.EnabledNotificationTypes &= ~type;
+                };
+                var row = new Grid {ColumnDefinitions = {new ColumnDefinition(GridLength.Auto), new ColumnDefinition()}};
+                row.Add(toggle);
+                row.Add(new Label {Text = type.GetDescription(), VerticalOptions = LayoutOptions.Center}, 1);
+                NotificationTypes.Children.Add(row);
+            }
+        }
+
+        private void RefreshTimeOnSelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_loading || RefreshTimePicker.SelectedIndex < 0)
+                return;
+            ViewModel.NotificationsRefreshTime = RefreshTimes[RefreshTimePicker.SelectedIndex];
+            //reschedules with the new interval
+            ResourceLocator.NotificationsTaskManager.StartTask(BgTasks.Notifications);
         }
 
         public void OnNavigatedFrom()

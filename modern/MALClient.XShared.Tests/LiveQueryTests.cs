@@ -4,6 +4,7 @@ using JikanDotNet;
 using MALClient.Models.Enums;
 using MALClient.Models.Models.Anime;
 using MALClient.XShared.Comm.Anime;
+using MALClient.XShared.Comm.Details;
 using MALClient.XShared.Comm.Manga;
 using MALClient.XShared.Comm.Profile;
 using Xunit;
@@ -133,6 +134,31 @@ namespace MALClient.XShared.Tests
             Assert.NotNull(profile);
             Assert.Contains(1, profile.FavouriteAnime);
             Assert.NotEmpty(profile.FavouriteCharacters);
+        }
+
+        [Fact]
+        public async Task CharacterDetails()
+        {
+            var character = await new CharacterDetailsQuery(40).GetCharacterDetails(true);
+
+            //nicknames go between the names, "Luffy "Mugiwara, Straw Hat" Monkey D."
+            Assert.StartsWith("Luffy", character.Name);
+            Assert.EndsWith("Monkey D.", character.Name);
+            Assert.False(string.IsNullOrEmpty(character.ImgUrl));
+            Assert.Contains(character.Animeography, anime => anime.Id == 21);
+            Assert.NotEmpty(character.VoiceActors);
+        }
+
+        [Fact]
+        public async Task StaffDetails()
+        {
+            //whoever voices Luffy lists him among their roles
+            var character = await new CharacterDetailsQuery(40).GetCharacterDetails(true);
+            var actor = character.VoiceActors.First();
+            var person = await new StaffDetailsQuery(int.Parse(actor.Id)).GetStaffDetails(true);
+
+            Assert.Equal(actor.Name, person.Name);
+            Assert.Contains(person.ShowCharacterPairs, pair => pair.AnimeCharacter.Id == "40");
         }
     }
 }

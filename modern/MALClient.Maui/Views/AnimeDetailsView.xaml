@@ -54,6 +54,11 @@
                     <Entry Grid.Column="1" Text="{Binding WatchedEpsInput}" Keyboard="Numeric" AutomationId="WatchedEpsInput" />
                     <Button Grid.Column="2" Text="Update" Command="{Binding ChangeWatchedCommand}" />
                 </Grid>
+                <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding AiringNotificationsButtonVisibility}">
+                    <Label Text="Notify me when new episodes air" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding AreAirNotificationsEnabled, Mode=OneWay}"
+                            Toggled="AirNotificationsOnToggled" AutomationId="AirNotificationsSwitch" />
+                </Grid>
 
                 <Label Text="Synopsis" Style="{StaticResource SectionHeader}" />
                 <Label Text="{Binding Synopsis}" AutomationId="Synopsis" />

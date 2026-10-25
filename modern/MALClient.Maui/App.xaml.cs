@@ -1,5 +1,6 @@
 ﻿using MALClient.Maui.Pages;
 using MALClient.Maui.ViewModels;
+using MALClient.Models.Enums;
 using MALClient.XShared.BL;
 using MALClient.XShared.Utils;
 using MALClient.XShared.ViewModels;
@@ -23,6 +24,7 @@ public partial class App : Application
 		{
 			await InitializationRoutines.InitApp();
 			MauiViewModelLocator.Main.PerformFirstNavigation();
+			ResourceLocator.NotificationsTaskManager.StartTask(BgTasks.Notifications);
 		};
 		return window;
 	}

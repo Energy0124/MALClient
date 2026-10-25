@@ -18,6 +18,47 @@
                 <Switch Grid.Column="1" x:Name="EnglishTitlesSwitch" Toggled="EnglishTitlesOnToggled" />
             </Grid>
 
+            <VerticalStackLayout x:Name="ViewModelSections" Spacing="8">
+                <Label Text="Calendar" Style="{StaticResource SectionHeader}" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Include shows I'm watching" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding CalendarIncludeWatching}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Include shows I plan to watch" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding CalendarIncludePlanned}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Open on today instead of the summary" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding CalendarStartOnToday}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Week starts on Sunday" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding CalendarSwitchMonSun}" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Hide days without shows" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding CalendarRemoveEmptyDays}" />
+                </Grid>
+
+                <Label Text="Notifications" Style="{StaticResource SectionHeader}" />
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Check for notifications in the background" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding EnableNotifications}" AutomationId="EnableNotifications" />
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <Label Text="Also check every few minutes while the app is open" VerticalOptions="Center" />
+                    <Switch Grid.Column="1" IsToggled="{Binding NotificationCheckInRuntime}" />
+                </Grid>
+                <Picker x:Name="RefreshTimePicker" Title="Background check interval"
+                        SelectedIndexChanged="RefreshTimeOnSelectedIndexChanged" />
+                <Label Text="Notify me about" Style="{StaticResource Caption}" />
+                <VerticalStackLayout x:Name="NotificationTypes" />
+                <Button Text="Check now" Command="{Binding CallBackgroundTaskCommand}"
+                        IsEnabled="{Binding IsCallNotificationsButtonEnabled}" />
+                <Button Text="Show already seen notifications again" Command="{Binding ResetSeenNotificationsCommand}" />
+            </VerticalStackLayout>
+
             <Label Text="Storage" Style="{StaticResource SectionHeader}" />
             <Button Text="Clear cached data" Clicked="ClearCacheOnClicked" />
 

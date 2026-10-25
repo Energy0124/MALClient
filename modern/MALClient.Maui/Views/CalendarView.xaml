@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MALClient.Maui.Views.CalendarView">
+    <Grid RowDefinitions="Auto,*">
+        <!-- one tab per airing day plus the summary, like the pivot in the other apps -->
+        <ScrollView x:Name="TabsScroll" Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+            <HorizontalStackLayout x:Name="Tabs" Padding="8,4" Spacing="4" AutomationId="CalendarTabs" />
+        </ScrollView>
+
+        <CollectionView Grid.Row="1" x:Name="Items" IsGrouped="True" SelectionMode="Single"
+                        SelectionChanged="ItemsOnSelectionChanged" AutomationId="CalendarItems">
+            <CollectionView.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Left" Swiped="NextDayOnSwiped" />
+                <SwipeGestureRecognizer Direction="Right" Swiped="PreviousDayOnSwiped" />
+            </CollectionView.GestureRecognizers>
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" VerticalItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.EmptyView>
+                <Label x:Name="EmptyNotice" Text="None of the shows you watch or plan to watch air this week."
+                       HorizontalTextAlignment="Center" VerticalOptions="Center" Margin="24" />
+            </CollectionView.EmptyView>
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding Day}" Style="{StaticResource SectionHeader}" Margin="12,8,12,4" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Margin="8,0" StrokeThickness="0" StrokeShape="RoundRectangle 6"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray100}, Dark={StaticResource Gray900}}">
+                        <Grid RowDefinitions="220,Auto,Auto">
+                            <Image Source="{Binding ImgUrl}" Aspect="AspectFill" />
+                            <Label Text="{Binding MyEpisodesBind}" BackgroundColor="#AA000000" TextColor="White"
+                                   Padding="6,2" HorizontalOptions="End" VerticalOptions="Start" FontSize="12" />
+                            <Label Grid.Row="1" Text="{Binding Title}" FontAttributes="Bold" MaxLines="2"
+                                   LineBreakMode="TailTruncation" Margin="8,6,8,0" />
+                            <Label Grid.Row="2" Text="{Binding TimeTillNextAirCache}" Style="{StaticResource Caption}"
+                                   Margin="8,2,8,8" />
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentView>

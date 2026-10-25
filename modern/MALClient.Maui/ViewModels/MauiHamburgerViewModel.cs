@@ -55,6 +55,8 @@ namespace MALClient.Maui.ViewModels
                         AnimeListPageNavigationArgs.TopAnime(TopAnimeType.General))),
                 new HamburgerMenuItem(HamburgerButtons.Recommendations, "Recommendations",
                     () => Navigate(PageIndex.PageRecomendations, null)),
+                new HamburgerMenuItem(HamburgerButtons.Calendar, "Calendar",
+                    () => Navigate(PageIndex.PageCalendar, null)),
                 new HamburgerMenuItem(HamburgerButtons.AnimeSearch, "Search",
                     () => Navigate(PageIndex.PageSearch, new SearchPageNavigationArgs())),
                 new HamburgerMenuItem(HamburgerButtons.MangaList, "Manga list",
